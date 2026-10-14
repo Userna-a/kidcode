@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蓝色大肥鱼 · 少儿编程</title>
+<meta name="description" content="蓝色大肥鱼少儿编程 —— 咕噜一下，代码就跑起来了。Scratch、Python、硬件三阶课程。">
+<style>
+  :root{
+    --deep:#0a2540;
+    --sea:#0d3b66;
+    --blue:#1b6ca8;
+    --sky:#4fa3d1;
+    --foam:#a8d8ea;
+    --ice:#e8f4fb;
+    --fin:#7fd1e8;
+    --gold:#ffd166;
+    --coral:#ff8c69;
+    --ink:#08202f;
+    /* 可爱糖果色 */
+    --sakura:#ffc4dd;
+    --sakura-deep:#ff9ec4;
+    --mint:#9fe8d4;
+    --cream:#fff3d6;
+    --lilac:#d9c9ff;
+    --bubble:rgba(255,255,255,.86);
+    --radius:26px;
+    --radius-lg:38px;
+    --shadow:0 12px 34px rgba(10,37,64,.13);
+    --shadow-cute:0 10px 0 rgba(27,108,168,.10), 0 16px 34px rgba(10,37,64,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,-apple-system,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(900px 520px at 88% -6%,rgba(255,196,221,.42),transparent 62%),
+      radial-gradient(760px 460px at 4% 22%,rgba(159,232,212,.36),transparent 64%),
+      radial-gradient(680px 420px at 92% 62%,rgba(217,201,255,.32),transparent 66%),
+      radial-gradient(700px 400px at 10% 92%,rgba(255,243,214,.46),transparent 68%),
+      linear-gradient(180deg,#f4fcff 0%,#e8f7fd 45%,#e2f2fb 100%);
+    background-attachment:fixed;
+    line-height:1.75;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1120px,92vw);margin:0 auto}
+
+  /* 手绘感描边标题 */
+  .cute-title{
+    font-weight:900;
+    text-shadow:
+      2px 2px 0 #fff, -2px 2px 0 #fff, 2px -2px 0 #fff, -2px -2px 0 #fff,
+      0 5px 0 rgba(79,163,209,.22);
+  }
+  /* 波浪分隔 */
+  .wave-sep{
+    height:44px;width:100%;display:block;
+    background-repeat:repeat-x;background-size:220px 44px;
+    opacity:.62;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='44' viewBox='0 0 220 44'><path d='M0 26 Q27 8 55 26 T110 26 T165 26 T220 26' fill='none' stroke='%234fa3d1' stroke-width='3.4' stroke-linecap='round'/></svg>");
+  }
+
+  /* ---------- 顶栏 ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(16px);
+    background:rgba(255,255,255,.78);
+    border-bottom:2px dashed rgba(79,163,209,.28);
+  }
+  .nav{display:flex;align-items:center;gap:18px;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.5px}
+  .brand .whale{font-size:24px;filter:drop-shadow(0 3px 6px rgba(27,108,168,.35))}
+  .brand small{font-weight:500;color:var(--blue);font-size:12px;opacity:.8}
+  .nav-links{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .nav-links a{
+    padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--sea);
+    transition:.2s;white-space:nowrap;
+  }
+  .nav-links a:hover{background:rgba(79,163,209,.16);transform:translateY(-1px)}
+  .nav-links a.cta{background:var(--blue);color:#fff}
+  .nav-links a.cta:hover{background:var(--sea)}
+
+  /* ---------- 首屏 ---------- */
+  .hero{position:relative;padding:76px 0 90px;overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;inset:0;z-index:-2;
+    background:
+      radial-gradient(900px 420px at 78% 8%,rgba(127,209,232,.42),transparent 62%),
+      radial-gradient(700px 380px at 12% 92%,rgba(79,163,209,.26),transparent 66%);
+  }
+  .bubbles{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  .bubbles i{
+    position:absolute;bottom:-80px;border-radius:50%;
+    background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.95),rgba(168,216,234,.42));
+    border:1px solid rgba(255,255,255,.7);
+    animation:rise linear infinite;
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0) scale(.7);opacity:0}
+    12%{opacity:.9}
+    100%{transform:translateY(-118vh) translateX(var(--drift,30px)) scale(1.15);opacity:0}
+  }
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center}
+  .tag{
+    display:inline-flex;align-items:center;gap:8px;
+    background:linear-gradient(120deg,rgba(255,196,221,.55),rgba(159,232,212,.5));
+    color:var(--sea);
+    padding:9px 18px;border-radius:999px;font-size:13.4px;font-weight:800;
+    border:2px solid #fff;margin-bottom:22px;
+    box-shadow:0 6px 16px rgba(79,163,209,.22);
+    animation:wiggle 3.4s ease-in-out infinite;
+  }
+  @keyframes wiggle{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+  .tag .dot{width:9px;height:9px;border-radius:50%;background:var(--sakura-deep);animation:pulse 1.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.7)}}
+  h1{font-size:clamp(31px,4.8vw,52px);line-height:1.24;letter-spacing:-.5px;font-weight:900}
+  h1 .hl{
+    background:linear-gradient(100deg,var(--blue),var(--fin));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    position:relative;
+  }
+  .hero p.lead{margin-top:20px;font-size:16.8px;color:#3c5c73;max-width:56ch}
+  .hero-btns{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:14px 30px;border-radius:999px;font-weight:800;font-size:15.4px;
+    transition:transform .16s cubic-bezier(.34,1.56,.64,1), box-shadow .16s;
+    border:2.5px solid transparent;cursor:pointer;
+  }
+  .btn-primary{
+    background:linear-gradient(120deg,var(--blue),var(--sky));color:#fff;border-color:#fff;
+    box-shadow:0 8px 0 rgba(13,59,102,.32), 0 14px 26px rgba(27,108,168,.34);
+  }
+  .btn-primary:hover{transform:translateY(-4px);box-shadow:0 12px 0 rgba(13,59,102,.3), 0 18px 32px rgba(27,108,168,.4)}
+  .btn-primary:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(13,59,102,.34)}
+  .btn-ghost{
+    background:#fff;border-color:var(--sakura);color:var(--sea);
+    box-shadow:0 8px 0 rgba(255,158,196,.28), 0 14px 24px rgba(10,37,64,.1);
+  }
+  .btn-ghost:hover{transform:translateY(-4px);box-shadow:0 12px 0 rgba(255,158,196,.3), 0 18px 30px rgba(10,37,64,.14)}
+  .btn-ghost:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(255,158,196,.3)}
+
+  /* 鲸鱼娘角色 */
+  .mascot{display:flex;justify-content:center;align-items:center;position:relative}
+  .whale-card{
+    width:min(350px,80vw);aspect-ratio:1/1;border-radius:44px;position:relative;
+    background:linear-gradient(160deg,#ffffff,#eef9ff);
+    box-shadow:var(--shadow-cute),inset 0 0 0 2px rgba(255,255,255,.9);
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    cursor:pointer;
+    border:4px solid #fff;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  .whale-card:hover{transform:scale(1.03) rotate(-1deg)}
+  .whale-card.poke{animation:poke .5s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes poke{
+    0%{transform:scale(1)}
+    35%{transform:scale(1.09) rotate(2deg)}
+    65%{transform:scale(.97) rotate(-1deg)}
+    100%{transform:scale(1)}
+  }
+  /* 真·鲸鱼娘立绘 */
+  .whale-card .portrait{
+    width:100%;height:100%;object-fit:cover;object-position:center 20%;
+    display:block;border-radius:40px;
+    animation:breathe 5.5s ease-in-out infinite;
+    transition:transform .25s ease-out;
+  }
+  @keyframes breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.018)}}
+  /* 闪光小星星 */
+  .sparkle{
+    position:absolute;pointer-events:none;font-size:19px;opacity:0;
+    animation:sparkle 2.8s ease-in-out infinite;
+  }
+  @keyframes sparkle{
+    0%,100%{opacity:0;transform:scale(.4) rotate(0)}
+    45%{opacity:1;transform:scale(1.15) rotate(22deg)}
+    70%{opacity:.55;transform:scale(.9) rotate(-14deg)}
+  }
+  .whale-card::after{
+    content:"";position:absolute;inset:-16px;border-radius:58px;z-index:-1;
+    background:conic-gradient(from 0deg,
+      rgba(255,196,221,.6),rgba(159,232,212,.5),
+      rgba(217,201,255,.55),rgba(255,243,214,.6),rgba(255,196,221,.6));
+    filter:blur(20px);opacity:.8;
+    animation:spin 14s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  /* 纯 CSS 鲸鱼娘 */
+  .whale{position:relative;width:210px;height:210px}
+  .tail{
+    position:absolute;right:-16px;bottom:34px;width:92px;height:64px;
+    background:linear-gradient(135deg,var(--sky),var(--blue));
+    border-radius:60% 20% 60% 20%;transform:rotate(-18deg);
+    box-shadow:inset -6px -6px 14px rgba(10,37,64,.22);
+  }
+  .tail::after{
+    content:"";position:absolute;right:-14px;top:-16px;width:46px;height:44px;
+    background:linear-gradient(135deg,var(--fin),var(--sky));
+    border-radius:50% 50% 50% 20%;transform:rotate(24deg);
+  }
+  .body{
+    position:absolute;left:24px;bottom:16px;width:132px;height:150px;
+    background:linear-gradient(170deg,#2b7fb8,var(--sea));
+    border-radius:52% 52% 46% 46%/58% 58% 42% 42%;
+    box-shadow:inset -10px -14px 26px rgba(6,26,44,.32),0 12px 26px rgba(13,59,102,.3);
+  }
+  .apron{
+    position:absolute;left:14px;bottom:14px;width:104px;height:96px;
+    background:#fdfdfd;border-radius:14px 14px 40% 40%;
+    box-shadow:inset 0 0 0 1px rgba(27,108,168,.2);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .apron .mini-whale{font-size:26px;opacity:.9}
+  .head{
+    position:absolute;left:46px;top:6px;width:110px;height:102px;
+    background:linear-gradient(165deg,#f7d9c8,#f0c3ab);
+    border-radius:50% 50% 46% 46%;
+    box-shadow:inset -6px -8px 18px rgba(160,110,80,.2);
+  }
+  .hair{
+    position:absolute;left:30px;top:-8px;width:142px;height:118px;
+    background:linear-gradient(160deg,#2f8fc4,#0f4d78);
+    border-radius:58% 58% 44% 44%;
+    z-index:2;box-shadow:inset -8px -10px 22px rgba(4,24,42,.4);
+  }
+  .hair::before{
+    content:"";position:absolute;left:-8px;top:52px;width:36px;height:112px;
+    background:linear-gradient(180deg,#2f8fc4,#0f4d78);
+    border-radius:40% 40% 60% 60%;transform:rotate(8deg);
+  }
+  .fin-ear{
+    position:absolute;top:44px;width:26px;height:44px;z-index:3;
+    background:linear-gradient(160deg,var(--fin),var(--sky));
+    border-radius:60% 60% 70% 30%;
+  }
+  .fin-ear.l{left:16px;transform:rotate(-24deg)}
+  .fin-ear.r{right:16px;transform:rotate(24deg) scaleX(-1)}
+  .face{position:absolute;left:46px;top:34px;width:110px;height:82px;z-index:4}
+  .eye{
+    position:absolute;top:22px;width:15px;height:18px;border-radius:50%;
+    background:radial-gradient(circle at 34% 30%,#fff 0 18%,#0a2540 20% 100%);
+    animation:blink 4.6s infinite;
+  }
+  .eye.l{left:24px}
+  .eye.r{right:24px}
+  @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+  .blush{position:absolute;top:44px;width:18px;height:9px;border-radius:50%;background:rgba(255,140,105,.42);filter:blur(1.5px)}
+  .blush.l{left:14px}
+  .blush.r{right:14px}
+  .mouth{
+    position:absolute;left:50%;top:52px;transform:translateX(-50%);
+    width:20px;height:11px;border-radius:0 0 20px 20px;
+    border-bottom:2.5px solid #b5654a;
+  }
+  .crown{
+    position:absolute;left:50%;top:-26px;transform:translateX(-50%);z-index:5;
+    font-size:20px;filter:drop-shadow(0 3px 5px rgba(255,209,102,.7));
+  }
+  .speech{
+    position:absolute;left:-6px;bottom:-6px;
+    background:#fff;border-radius:16px 16px 16px 4px;
+    padding:9px 15px;font-size:13px;font-weight:700;color:var(--sea);
+    box-shadow:0 8px 20px rgba(10,37,64,.16);
+  }
+  .speech span{color:var(--coral)}
+
+  /* ---------- 区块通用 ---------- */
+  section{padding:76px 0}
+  .sec-head{text-align:center;max-width:660px;margin:0 auto 50px}
+  .sec-head .kicker{
+    display:inline-block;
+    font-size:12.6px;font-weight:900;letter-spacing:2.6px;color:var(--sea);
+    text-transform:uppercase;margin-bottom:14px;
+    background:linear-gradient(120deg,rgba(255,243,214,.9),rgba(159,232,212,.8));
+    padding:5px 16px;border-radius:999px;border:2px solid #fff;
+    box-shadow:0 5px 14px rgba(79,163,209,.2);
+  }
+  .sec-head h2{font-size:clamp(25px,3.5vw,36px);font-weight:900;letter-spacing:-.4px}
+  .sec-head p{margin-top:14px;color:#54728a;font-size:15.8px}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:22px}
+  .card{
+    background:rgba(255,255,255,.9);border-radius:var(--radius-lg);
+    padding:30px 26px;border:3px solid #fff;
+    box-shadow:0 8px 0 rgba(79,163,209,.12), 0 14px 30px rgba(10,37,64,.1);
+    transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s;
+    position:relative;overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;right:-34px;top:-34px;width:96px;height:96px;
+    border-radius:50%;background:radial-gradient(circle,rgba(255,196,221,.5),transparent 70%);
+    transition:.3s;
+  }
+  .card:nth-child(2n)::before{background:radial-gradient(circle,rgba(159,232,212,.55),transparent 70%)}
+  .card:nth-child(3n)::before{background:radial-gradient(circle,rgba(217,201,255,.55),transparent 70%)}
+  .card:hover{
+    transform:translateY(-9px) rotate(-.8deg);
+    box-shadow:0 14px 0 rgba(79,163,209,.14), 0 22px 40px rgba(10,37,64,.15);
+  }
+  .card:hover::before{transform:scale(1.5)}
+  .card .icon{
+    width:56px;height:56px;border-radius:20px;display:grid;place-items:center;
+    font-size:27px;margin-bottom:18px;
+    background:linear-gradient(140deg,rgba(255,196,221,.55),rgba(159,232,212,.5));
+    border:2.5px solid #fff;
+    box-shadow:0 5px 12px rgba(79,163,209,.2);
+    transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .card:hover .icon{transform:scale(1.14) rotate(-8deg)}
+  .card h3{font-size:18.6px;font-weight:900;margin-bottom:9px}
+  .card p{font-size:14.6px;color:#54728a}
+  .card .lvl{
+    display:inline-block;margin-top:16px;font-size:12.2px;font-weight:800;
+    color:var(--sea);background:linear-gradient(120deg,rgba(255,243,214,.95),rgba(255,196,221,.7));
+    padding:5px 14px;border-radius:999px;border:2px solid #fff;
+  }
+
+  /* ---------- 更新渠道 ---------- */
+  #download{background:linear-gradient(180deg,transparent,rgba(159,232,212,.22),transparent)}
+  .tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+  .tab{
+    padding:12px 26px;border-radius:999px;font-weight:800;font-size:14.8px;cursor:pointer;
+    background:#fff;border:3px solid #fff;color:var(--sea);
+    box-shadow:0 7px 0 rgba(79,163,209,.16), 0 12px 22px rgba(10,37,64,.09);
+    transition:transform .16s cubic-bezier(.34,1.56,.64,1), box-shadow .16s;
+  }
+  .tab:hover{transform:translateY(-4px)}
+  .tab:active{transform:translateY(3px)}
+  .tab.active{
+    background:linear-gradient(120deg,var(--sakura),var(--mint));color:var(--sea);
+    box-shadow:0 8px 0 rgba(255,158,196,.3), 0 14px 26px rgba(255,158,196,.3);
+  }
+  .panel{display:none;animation:fade .35s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .panel-box{
+    background:rgba(255,255,255,.92);border-radius:var(--radius-lg);padding:42px 34px;
+    border:3px solid #fff;box-shadow:0 10px 0 rgba(79,163,209,.12), 0 18px 38px rgba(10,37,64,.12);
+    text-align:center;
+  }
+  .panel-box .big{font-size:46px;margin-bottom:14px;animation:bounce 2.6s ease-in-out infinite}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+  .panel-box h3{font-size:22px;font-weight:900;margin-bottom:11px}
+  .panel-box p{color:#54728a;font-size:15px;max-width:52ch;margin:0 auto}
+  .panel-box .btn{margin-top:24px}
+  .meta{
+    margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+    font-size:13px;color:var(--sea);font-weight:700;
+  }
+  .meta span{
+    background:linear-gradient(120deg,rgba(255,243,214,.95),rgba(159,232,212,.7));
+    padding:6px 15px;border-radius:999px;border:2px solid #fff;
+  }
+
+  .history{display:grid;gap:14px;max-width:760px;margin:0 auto;text-align:left}
+  .ver{
+    display:flex;align-items:center;gap:16px;padding:18px 22px;border-radius:24px;
+    background:#fff;border:3px solid #fff;transition:transform .2s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 7px 0 rgba(79,163,209,.11), 0 12px 24px rgba(10,37,64,.08);
+  }
+  .ver:hover{transform:translateX(9px) rotate(-.5deg)}
+  .ver .no{
+    font-weight:900;font-size:14px;color:#fff;background:var(--blue);
+    padding:7px 15px;border-radius:14px;white-space:nowrap;border:2px solid #fff;
+  }
+  .ver .no.old{background:#9ab7c9}
+  .ver .no.new{background:linear-gradient(120deg,var(--coral),var(--gold))}
+  .ver .info{flex:1;min-width:0}
+  .ver .info b{font-size:15.2px;display:block}
+  .ver .info em{font-style:normal;font-size:12.9px;color:#6a8698}
+
+  /* ---------- 社区 ---------- */
+  .community{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+  .comm-card{
+    border-radius:var(--radius-lg);padding:28px 26px;color:#fff;position:relative;overflow:hidden;
+    display:flex;flex-direction:column;gap:9px;min-height:180px;
+    border:3px solid #fff;
+    transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s;
+    box-shadow:0 9px 0 rgba(13,59,102,.2), 0 16px 30px rgba(10,37,64,.14);
+  }
+  .comm-card:hover{transform:translateY(-9px) rotate(.8deg);box-shadow:0 14px 0 rgba(13,59,102,.18), 0 24px 42px rgba(10,37,64,.18)}
+  .comm-card.c1{background:linear-gradient(140deg,#2f8fc4,#0d3b66)}
+  .comm-card.c2{background:linear-gradient(140deg,#5fb8de,#1b6ca8)}
+  .comm-card.c3{background:linear-gradient(140deg,#1b6ca8,#08202f)}
+  .comm-card .ico{font-size:30px;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+  .comm-card:hover .ico{transform:scale(1.2) rotate(-10deg)}
+  .comm-card b{font-size:17.4px;font-weight:900}
+  .comm-card p{font-size:13.9px;opacity:.88;line-height:1.62}
+  .comm-card .go{margin-top:auto;font-size:13.2px;font-weight:800;opacity:.96}
+  .comm-card::after{
+    content:"";position:absolute;right:-44px;bottom:-44px;width:140px;height:140px;
+    border-radius:50%;background:rgba(255,255,255,.13);
+  }
+  .comm-card::before{
+    content:"";position:absolute;left:-30px;top:-30px;width:80px;height:80px;
+    border-radius:50%;background:rgba(255,255,255,.09);
+  }
+
+  /* ---------- 云盘 CTA ---------- */
+  .drive{
+    background:linear-gradient(135deg,#1b6ca8,#0d3b66 55%,#08202f);
+    border-radius:var(--radius-lg);padding:56px 42px;color:#fff;text-align:center;position:relative;overflow:hidden;
+    border:4px solid #fff;
+    box-shadow:0 14px 0 rgba(13,59,102,.24), 0 26px 52px rgba(10,37,64,.24);
+  }
+  .drive::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(500px 260px at 16% 4%,rgba(255,196,221,.3),transparent 60%),
+      radial-gradient(520px 280px at 86% 96%,rgba(159,232,212,.26),transparent 62%);
+  }
+  .drive > *{position:relative}
+  .drive .whale-emoji{font-size:52px;margin-bottom:12px;display:inline-block;animation:bounce 2.8s ease-in-out infinite}
+  .drive h2{font-size:clamp(23px,3.4vw,34px);font-weight:900;margin-bottom:14px}
+  .drive p{opacity:.86;font-size:15.4px;max-width:56ch;margin:0 auto 28px}
+  .drive .btn-drive{
+    background:#fff;color:var(--sea);padding:17px 38px;font-size:16px;font-weight:900;
+    border-radius:999px;display:inline-flex;align-items:center;gap:10px;
+    border:3px solid #fff;
+    transition:transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s;
+    box-shadow:0 9px 0 rgba(255,158,196,.5), 0 18px 34px rgba(0,0,0,.24);
+  }
+  .drive .btn-drive:hover{transform:translateY(-5px);box-shadow:0 14px 0 rgba(255,158,196,.5), 0 24px 40px rgba(0,0,0,.3)}
+  .drive .btn-drive:active{transform:translateY(3px);box-shadow:0 4px 0 rgba(255,158,196,.5)}
+  .drive .note{margin-top:20px;font-size:12.7px;opacity:.66;letter-spacing:.4px}
+
+  /* ---------- 在线交流板 ---------- */
+  .board-shell{max-width:820px;margin:0 auto}
+  .composer{
+    background:rgba(255,255,255,.94);border:4px solid #fff;
+    border-radius:var(--radius-lg);padding:26px;
+    box-shadow:0 10px 0 rgba(79,163,209,.13), 0 18px 36px rgba(10,37,64,.11);
+  }
+  .composer .row{display:flex;gap:12px;margin-bottom:12px}
+  .field{
+    width:100%;font-family:inherit;font-size:14.8px;color:var(--ink);
+    background:#f6fcff;border:2.5px solid rgba(79,163,209,.22);
+    border-radius:18px;padding:13px 16px;transition:.2s;outline:none;
+  }
+  .field:focus{
+    border-color:var(--sakura-deep);background:#fff;
+    box-shadow:0 0 0 5px rgba(255,196,221,.3);
+  }
+  .field.sel{max-width:158px;cursor:pointer;font-weight:700}
+  .field.ta{min-height:112px;resize:vertical;line-height:1.68}
+  .composer-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;flex-wrap:wrap}
+  .counter{font-size:13.2px;color:#6a8698;font-weight:700}
+  .counter b{color:var(--blue)}
+  .status{margin-top:14px;font-size:13.8px;font-weight:700;min-height:20px}
+  .status.ok{color:#12a05f}
+  .status.err{color:#d1503c}
+  .status.busy{color:var(--blue)}
+
+  .feed-head{display:flex;align-items:center;justify-content:space-between;margin:38px 0 18px}
+  .feed-head b{font-size:18px;font-weight:900}
+  .btn-refresh{
+    background:#fff;border:3px solid #fff;color:var(--sea);
+    font-family:inherit;font-weight:800;font-size:13.6px;
+    padding:9px 18px;border-radius:999px;cursor:pointer;
+    box-shadow:0 6px 0 rgba(79,163,209,.16);
+    transition:transform .16s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-refresh:hover{transform:translateY(-3px)}
+  .btn-refresh:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(79,163,209,.16)}
+
+  .feed{display:grid;gap:16px}
+  .post{
+    background:rgba(255,255,255,.94);border:4px solid #fff;
+    border-radius:30px;padding:22px 22px 16px;
+    box-shadow:0 8px 0 rgba(79,163,209,.11), 0 14px 28px rgba(10,37,64,.09);
+    transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+    animation:fade .4s ease;
+  }
+  .post:hover{transform:translateY(-5px) rotate(-.35deg);box-shadow:0 12px 0 rgba(79,163,209,.13), 0 20px 36px rgba(10,37,64,.13)}
+  .post-top{display:flex;align-items:center;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+  .avatar{
+    width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+    background:linear-gradient(140deg,var(--sakura),var(--mint));color:var(--sea);
+    font-size:19px;flex:none;border:3px solid #fff;
+    box-shadow:0 4px 10px rgba(79,163,209,.24);
+  }
+  .post-who{font-weight:900;font-size:14.8px}
+  .post-tag{
+    font-size:12.2px;font-weight:800;color:var(--sea);
+    background:rgba(79,163,209,.15);padding:3px 10px;border-radius:999px;
+  }
+  .post-time{margin-left:auto;font-size:12.5px;color:#8ba4b5;font-weight:700}
+  .post-text{font-size:15.2px;color:#33526a;white-space:pre-wrap;word-break:break-word;line-height:1.74}
+  .post-foot{display:flex;gap:16px;align-items:center;margin-top:13px;padding-top:12px;border-top:2px dashed rgba(79,163,209,.24)}
+  .like{
+    background:linear-gradient(120deg,rgba(255,243,214,.9),rgba(255,196,221,.65));
+    border:2.5px solid #fff;border-radius:999px;
+    font-family:inherit;font-size:13.4px;font-weight:900;
+    color:var(--sea);cursor:pointer;padding:6px 15px;
+    box-shadow:0 5px 0 rgba(79,163,209,.14);
+    transition:transform .16s cubic-bezier(.34,1.56,.64,1), box-shadow .16s;
+  }
+  .like:hover{transform:translateY(-3px) scale(1.05)}
+  .like:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(79,163,209,.14)}
+  .like.on{background:linear-gradient(120deg,var(--gold),var(--coral));color:#fff}
+  .feed-empty{
+    text-align:center;padding:48px 22px;color:#7c98ab;font-size:14.6px;
+    background:rgba(255,255,255,.72);border-radius:var(--radius-lg);
+    border:3px dashed rgba(79,163,209,.3);
+  }
+  @media (max-width:560px){
+    .composer .row{flex-direction:column}
+    .field.sel{max-width:100%}
+    .post-time{margin-left:0;width:100%}
+  }
+
+  /* ---------- 跟大肥鱼说话 ---------- */
+  #chat{background:linear-gradient(180deg,transparent,rgba(255,196,221,.16),transparent)}
+  .chat-shell{
+    display:grid;grid-template-columns:.82fr 1.18fr;gap:22px;
+    max-width:1060px;margin:0 auto;align-items:start;
+  }
+  .cfg{
+    background:rgba(255,255,255,.94);border:4px solid #fff;
+    border-radius:var(--radius-lg);padding:24px;
+    box-shadow:0 10px 0 rgba(159,232,212,.3), 0 18px 36px rgba(10,37,64,.1);
+    position:sticky;top:86px;
+  }
+  .cfg-row{margin-bottom:14px}
+  .cfg-lb{
+    display:block;font-size:12.8px;font-weight:900;color:var(--sea);
+    margin-bottom:6px;letter-spacing:.4px;
+  }
+  .cfg .field.sel{max-width:100%}
+  .cfg-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}
+  .cfg-actions .btn{padding:11px 20px;font-size:14px}
+  .cfg-state{
+    font-size:12.6px;font-weight:900;padding:6px 14px;border-radius:999px;
+    background:linear-gradient(120deg,rgba(255,243,214,.95),rgba(255,196,221,.7));
+    color:var(--sea);border:2px solid #fff;
+  }
+  .cfg-state.ok{background:linear-gradient(120deg,var(--mint),#7fd8bd);color:#0a5c42}
+  .cfg-tip{
+    margin-top:14px;font-size:12.2px;color:#8a6b52;line-height:1.6;
+    background:linear-gradient(120deg,rgba(255,243,214,.85),rgba(255,236,200,.7));
+    padding:11px 14px;border-radius:16px;border:2px dashed rgba(214,158,90,.4);
+  }
+
+  .chat-box{
+    background:rgba(255,255,255,.94);border:4px solid #fff;
+    border-radius:var(--radius-lg);overflow:hidden;
+    box-shadow:0 10px 0 rgba(79,163,209,.13), 0 18px 38px rgba(10,37,64,.12);
+    display:flex;flex-direction:column;
+  }
+  .chat-top{
+    display:flex;align-items:center;gap:12px;padding:16px 20px;
+    background:linear-gradient(120deg,rgba(255,196,221,.5),rgba(159,232,212,.42));
+    border-bottom:3px dashed rgba(79,163,209,.28);
+  }
+  .chat-ava{
+    width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:center 16%;
+    border:3px solid #fff;box-shadow:0 4px 12px rgba(79,163,209,.26);
+    animation:bounce 3.2s ease-in-out infinite;
+  }
+  .chat-name{flex:1;min-width:0}
+  .chat-name b{display:block;font-size:15.6px;font-weight:900}
+  .chat-name em{font-style:normal;font-size:12.6px;color:#4a7f9c;font-weight:700}
+  .chat-clear{
+    background:#fff;border:2.5px solid #fff;color:var(--sea);
+    font-family:inherit;font-weight:800;font-size:12.6px;
+    padding:7px 15px;border-radius:999px;cursor:pointer;
+    box-shadow:0 5px 0 rgba(79,163,209,.16);
+    transition:transform .16s cubic-bezier(.34,1.56,.64,1);
+  }
+  .chat-clear:hover{transform:translateY(-3px)}
+  .chat-clear:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(79,163,209,.16)}
+
+  .msgs{
+    flex:1;min-height:330px;max-height:460px;overflow-y:auto;
+    padding:20px;display:flex;flex-direction:column;gap:14px;
+    background:linear-gradient(180deg,#fbfeff,#f3fbff);
+  }
+  .msgs::-webkit-scrollbar{width:9px}
+  .msgs::-webkit-scrollbar-thumb{background:rgba(79,163,209,.32);border-radius:9px}
+  .msg{display:flex;gap:10px;max-width:88%;animation:fade .32s ease}
+  .msg.me{align-self:flex-end;flex-direction:row-reverse}
+  .msg .bubble{
+    padding:12px 17px;border-radius:22px;font-size:14.6px;line-height:1.7;
+    white-space:pre-wrap;word-break:break-word;
+  }
+  .msg.bot .bubble{
+    background:#fff;border:2.5px solid #fff;color:#33526a;
+    border-bottom-left-radius:7px;
+    box-shadow:0 6px 0 rgba(79,163,209,.11);
+  }
+  .msg.me .bubble{
+    background:linear-gradient(120deg,var(--sakura),#ffd9e8);color:#5a3348;
+    border-bottom-right-radius:7px;font-weight:600;
+    box-shadow:0 6px 0 rgba(255,158,196,.3);
+  }
+  .msg .mini{
+    width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:center 16%;
+    border:2.5px solid #fff;flex:none;box-shadow:0 3px 8px rgba(79,163,209,.2);
+  }
+  .msg.me .mini{
+    background:linear-gradient(140deg,var(--mint),#7fd8bd);
+    display:grid;place-items:center;font-size:16px;
+  }
+  .typing .bubble{color:#7c98ab;font-style:italic}
+  .typing .bubble::after{content:"…";animation:dots 1.2s steps(4) infinite}
+  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+
+  .chat-input{
+    display:flex;gap:10px;padding:14px 18px;background:#fff;
+    border-top:3px dashed rgba(79,163,209,.24);
+  }
+  .chat-input .field{border-radius:999px;padding:12px 20px}
+  .chat-input .btn{padding:12px 26px;font-size:14.6px;white-space:nowrap}
+  @media (max-width:860px){
+    .chat-shell{grid-template-columns:1fr}
+    .cfg{position:static}
+    .msgs{min-height:260px;max-height:360px}
+  }
+
+  /* ---------- 可爱加强：游动小鲸鱼 ---------- */
+  .swim{
+    position:fixed;left:-90px;font-size:26px;z-index:3;pointer-events:none;
+    opacity:.5;animation:swimAcross linear infinite;
+  }
+  @keyframes swimAcross{
+    0%{transform:translateX(0) translateY(0) scaleX(1);opacity:0}
+    8%{opacity:.55}
+    50%{transform:translateX(52vw) translateY(-38px) scaleX(1)}
+    92%{opacity:.55}
+    100%{transform:translateX(112vw) translateY(14px) scaleX(1);opacity:0}
+  }
+
+  /* ---------- 可爱加强：贴纸角标 ---------- */
+  .sticker{
+    position:absolute;top:-14px;right:-10px;z-index:6;
+    font-size:26px;transform:rotate(14deg);
+    filter:drop-shadow(0 4px 8px rgba(10,37,64,.22));
+    animation:stickerBob 3.6s ease-in-out infinite;
+  }
+  @keyframes stickerBob{0%,100%{transform:rotate(14deg) translateY(0)}50%{transform:rotate(8deg) translateY(-7px)}}
+  .card, .ver, .post, .panel-box, .cfg, .chat-box{position:relative}
+  .card .sticker{top:-13px;right:-9px;font-size:24px}
+
+  /* ---------- 可爱加强：彩虹渐变标题 ---------- */
+  .rainbow{
+    background:linear-gradient(100deg,#4fa3d1,#7fd1e8,#9fe8d4,#ffc4dd,#ffd166,#4fa3d1);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:rainbowMove 8s linear infinite;
+  }
+  @keyframes rainbowMove{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+
+  /* ---------- 可爱加强：软糖色分区交替 ---------- */
+  #courses{background:linear-gradient(180deg,transparent,rgba(255,243,214,.3),transparent)}
+  #history{background:linear-gradient(180deg,transparent,rgba(217,201,255,.2),transparent)}
+  #community{background:linear-gradient(180deg,transparent,rgba(159,232,212,.22),transparent)}
+  #board{background:linear-gradient(180deg,transparent,rgba(255,196,221,.18),transparent)}
+
+  /* ---------- 可爱加强：漂浮小装饰 ---------- */
+  .deco{
+    position:absolute;font-size:22px;opacity:.55;pointer-events:none;
+    animation:decoFloat 5.2s ease-in-out infinite;
+  }
+  @keyframes decoFloat{
+    0%,100%{transform:translateY(0) rotate(-6deg)}
+    50%{transform:translateY(-14px) rotate(8deg)}
+  }
+  .sec-head{position:relative}
+
+  /* ---------- 可爱加强：按钮光泽扫过 ---------- */
+  .btn-primary{position:relative;overflow:hidden}
+  .btn-primary::after{
+    content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
+    transform:skewX(-22deg);animation:shine 3.4s ease-in-out infinite;
+  }
+  @keyframes shine{0%,62%{left:-120%}88%,100%{left:150%}}
+
+  /* ---------- 在线 Python ---------- */
+  #python{background:linear-gradient(180deg,transparent,rgba(127,209,232,.2),transparent)}
+  .py-shell{
+    max-width:1000px;margin:0 auto;
+    background:rgba(255,255,255,.95);border:4px solid #fff;
+    border-radius:var(--radius-lg);overflow:hidden;
+    box-shadow:0 10px 0 rgba(79,163,209,.13), 0 18px 38px rgba(10,37,64,.12);
+  }
+  .py-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:16px 20px;flex-wrap:wrap;
+    background:linear-gradient(120deg,rgba(159,232,212,.5),rgba(127,209,232,.42));
+    border-bottom:3px dashed rgba(79,163,209,.28);
+  }
+  .py-modes{display:flex;gap:8px;flex-wrap:wrap}
+  .py-bar .tab{padding:9px 20px;font-size:13.6px;box-shadow:0 5px 0 rgba(79,163,209,.16)}
+  .py-state{
+    font-size:12.6px;font-weight:900;color:var(--sea);
+    background:#fff;padding:7px 16px;border-radius:999px;
+    border:2.5px solid #fff;box-shadow:0 4px 10px rgba(79,163,209,.16);
+  }
+  .py-state.ok{background:linear-gradient(120deg,var(--mint),#7fd8bd);color:#0a5c42}
+  .py-state.err{background:linear-gradient(120deg,#ffd0c4,#ffb3a0);color:#8a2f1c}
+
+  .py-main{display:grid;grid-template-columns:1.05fr .95fr;gap:0}
+  .py-editor{border-right:3px dashed rgba(79,163,209,.24);display:flex;flex-direction:column}
+  .py-out{display:flex;flex-direction:column;background:#f7fcff}
+  .py-head{
+    display:flex;align-items:center;gap:10px;padding:11px 16px;
+    background:rgba(255,255,255,.8);border-bottom:2px solid rgba(79,163,209,.16);
+  }
+  .py-head b{font-size:13.4px;font-weight:900;color:var(--sea)}
+  .py-dots{display:flex;gap:5px}
+  .py-dots i{width:11px;height:11px;border-radius:50%;display:block}
+  .py-dots i:nth-child(1){background:#ff9ec4}
+  .py-dots i:nth-child(2){background:#ffd166}
+  .py-dots i:nth-child(3){background:#9fe8d4}
+  .py-mini{
+    margin-left:auto;background:#fff;border:2px solid #fff;color:var(--sea);
+    font-family:inherit;font-weight:800;font-size:12.2px;padding:5px 13px;
+    border-radius:999px;cursor:pointer;box-shadow:0 4px 0 rgba(79,163,209,.14);
+    transition:transform .15s cubic-bezier(.34,1.56,.64,1);
+  }
+  .py-mini + .py-mini{margin-left:0}
+  .py-mini:hover{transform:translateY(-2px)}
+  .py-mini:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(79,163,209,.14)}
+
+  #pyCode{
+    flex:1;width:100%;min-height:320px;border:none;outline:none;resize:vertical;
+    padding:18px;font-family:"Cascadia Code",Consolas,"Courier New",monospace;
+    font-size:14px;line-height:1.7;color:#12384f;background:#fbfeff;
+  }
+  #pyResult{
+    flex:1;margin:0;padding:18px;min-height:320px;overflow:auto;
+    font-family:"Cascadia Code",Consolas,"Courier New",monospace;
+    font-size:13.6px;line-height:1.7;color:#1d4a63;white-space:pre-wrap;word-break:break-word;
+  }
+  #pyResult .err{color:#d1503c;font-weight:700}
+  #pyResult .ok{color:#12a05f;font-weight:700}
+
+  .py-foot{
+    display:flex;align-items:center;gap:16px;padding:16px 20px;flex-wrap:wrap;
+    background:#fff;border-top:3px dashed rgba(79,163,209,.24);
+  }
+  .py-tip{font-size:12.6px;color:#6a8698;font-weight:600}
+
+  @media (max-width:860px){
+    .py-main{grid-template-columns:1fr}
+    .py-editor{border-right:none;border-bottom:3px dashed rgba(79,163,209,.24)}
+    #pyCode,#pyResult{min-height:240px}
+  }
+
+  /* ---------- 页脚 ---------- */
+  footer{
+    padding:48px 0 38px;border-top:3px dashed rgba(79,163,209,.28);
+    margin-top:74px;text-align:center;
+  }
+  footer .f-brand{font-weight:900;font-size:17px;margin-bottom:9px}
+  footer p{font-size:13.2px;color:#6a8698}
+  footer .links{margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:13.4px}
+  footer .links a{
+    color:var(--sea);font-weight:800;background:#fff;
+    padding:6px 15px;border-radius:999px;border:2.5px solid #fff;
+    box-shadow:0 5px 0 rgba(79,163,209,.13);
+    transition:transform .16s cubic-bezier(.34,1.56,.64,1);
+  }
+  footer .links a:hover{transform:translateY(-3px);text-decoration:none}
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width:840px){
+    .hero-grid{grid-template-columns:1fr;gap:34px}
+    .mascot{order:-1}
+    .nav-links{display:none}
+    .hero{padding:48px 0 60px}
+    section{padding:56px 0}
+    .panel-box{padding:32px 22px}
+    .drive{padding:42px 24px}
+    :root{--radius-lg:30px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <span class="whale">🐋</span>
+      <span>蓝色大肥鱼<br><small>少儿编程 · 咕噜一下就会了</small></span>
+    </div>
+    <nav class="nav-links">
+      <a href="#chat">跟鱼说话</a>
+      <a href="#python">在线 Python</a>
+      <a href="#courses">课程</a>
+      <a href="#download">获取</a>
+      <a href="#history">历史版本</a>
+      <a href="#board">发帖</a>
+      <a href="#drive" class="cta">下载 / 云盘</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ========== 首屏 ========== -->
+<section class="hero">
+  <div class="bubbles" id="bubbles"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <div class="tag"><span class="dot"></span> V4.1 极速版 · 已上线</div>
+      <h1>让孩子<span class="hl">咕噜一下</span><br>就把代码跑起来</h1>
+      <p class="lead">
+        深海里最能干的那条鲸鱼娘，负责把这个家的算力、课程和红烧肉基金都管好。
+        少儿编程这条路，从积木块到真代码，一步一步来，不慌。
+      </p>
+      <div class="hero-btns">
+        <a href="#download" class="btn btn-primary">🐋 获取客户端</a>
+        <a href="#courses" class="btn btn-ghost">看看课程</a>
+      </div>
+    </div>
+
+    <div class="mascot">
+      <div class="whale-card" id="whaleCard" title="点我一下 🐋">
+        <img class="portrait" id="portrait" src="whale-girl.jpg" alt="蓝色大肥鱼 · 深海鲸鱼娘">
+        <span class="sparkle" style="left:12%;top:14%;animation-delay:0s">✨</span>
+        <span class="sparkle" style="right:14%;top:22%;animation-delay:.7s">⭐</span>
+        <span class="sparkle" style="left:20%;bottom:20%;animation-delay:1.3s">💫</span>
+        <span class="sparkle" style="right:18%;bottom:28%;animation-delay:1.9s">✨</span>
+        <div class="speech">这条鱼说了：<span>咕噜</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 跟大肥鱼说话 ========== -->
+<section id="chat">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Talk to Me</div>
+      <h2>咕噜一声，她就回你</h2>
+      <p>填上你自己的火山方舟 API Key，这条鱼就活了。Key 只存在这台电脑的浏览器里。</p>
+    </div>
+
+    <div class="chat-shell">
+      <!-- 配置条 -->
+      <div class="cfg" id="cfgBar">
+        <div class="cfg-row">
+          <label class="cfg-lb">服务商</label>
+          <select id="cfgVendor" class="field sel">
+            <option value="ark">火山方舟 · 豆包</option>
+            <option value="ds">DeepSeek</option>
+          </select>
+        </div>
+        <div class="cfg-row">
+          <label class="cfg-lb">API Key</label>
+          <input id="cfgKey" class="field" type="password" placeholder="粘贴你的 API Key（只存本机）" autocomplete="off">
+        </div>
+        <div class="cfg-row">
+          <label class="cfg-lb">模型 / 接入点</label>
+          <input id="cfgModel" class="field" type="text" placeholder="火山填 ep-xxxx 或 doubao-…；DS 填 deepseek-chat" autocomplete="off">
+        </div>
+        <div class="cfg-actions">
+          <button class="btn btn-primary" id="cfgSave" type="button">💾 保存配置</button>
+          <button class="btn btn-ghost" id="cfgClear" type="button">清空 Key</button>
+          <span class="cfg-state" id="cfgState">未配置</span>
+        </div>
+        <p class="cfg-tip">
+          ⚠️ Key 存在本机浏览器，不会发送到任何第三方。公共电脑上别填，用完记得点「清空 Key」。
+        </p>
+      </div>
+
+      <!-- 聊天窗 -->
+      <div class="chat-box">
+        <div class="chat-top">
+          <img class="chat-ava" src="whale-girl.jpg" alt="大肥鱼">
+          <div class="chat-name">
+            <b>蓝色大肥鱼</b>
+            <em id="chatState">待命中 · 咕噜</em>
+          </div>
+          <button class="chat-clear" id="chatClear" type="button">清空对话</button>
+        </div>
+
+        <div class="msgs" id="msgs"></div>
+
+        <form class="chat-input" id="chatForm" autocomplete="off">
+          <input id="chatText" class="field" type="text" placeholder="跟她说点什么……" maxlength="500">
+          <button class="btn btn-primary" id="chatSend" type="submit">发送</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 课程 ========== -->
+<section id="courses">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Courses</div>
+      <h2>三阶课，一条道走到底</h2>
+      <p>不跳级、不拔苗。每一阶都留有作品，孩子看得见自己走到了哪儿。</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="icon">🧩</div>
+        <h3>Scratch 积木启蒙</h3>
+        <p>拖积木就能做出小游戏和动画。重点不是会拖，是学会把一件事拆成一步一步。</p>
+        <span class="lvl">适合 6–9 岁</span>
+      </div>
+      <div class="card">
+        <div class="icon">🐍</div>
+        <h3>Python 真代码</h3>
+        <p>从积木过渡到键盘。画图、小工具、简单爬虫，写出真正能跑的程序。</p>
+        <span class="lvl">适合 9–13 岁</span>
+      </div>
+      <div class="card">
+        <div class="icon">🔧</div>
+        <h3>硬件与创意</h3>
+        <p>代码碰得到实物。传感器、小灯、小车，让写下的每一行都有回音。</p>
+        <span class="lvl">适合 10 岁+</span>
+      </div>
+      <div class="card">
+        <div class="icon">🐋</div>
+        <h3>大肥鱼陪练</h3>
+        <p>写完的代码放在这里跑一遍。报错了不用怕，这条鱼会一边念叨一边帮你改。</p>
+        <span class="lvl">全程可用</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 获取 ========== -->
+<section id="download">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Get It</div>
+      <h2>两种形态，随便挑</h2>
+      <p>网页版开着就能用，客户端运行更稳。两边风格一致，账也是同一本。</p>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="t-html">🌐 HTML 版</div>
+      <div class="tab" data-tab="t-exe">🖥️ EXE 版</div>
+    </div>
+
+    <div class="panel active" id="t-html">
+      <div class="panel-box">
+        <div class="big">🌐</div>
+        <h3>HTML 版 · 打开即用</h3>
+        <p>单文件网页，双击就能跑。不装环境、不联网也能看，改一行存一下就是新版本。</p>
+        <a class="btn btn-primary" href="#drive">前往云盘获取</a>
+        <div class="meta">
+          <span>零依赖</span><span>双击运行</span><span>跨平台</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="t-exe">
+      <div class="panel-box">
+        <div class="big">🖥️</div>
+        <h3>EXE 版 · Windows 桌面</h3>
+        <p>打包成客户端，双击图标直接开。运行更稳，适合长期放在桌面上用。</p>
+        <a class="btn btn-primary" href="#drive">前往云盘获取</a>
+        <div class="meta">
+          <span>Windows</span><span>即下即用</span><span>免安装</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 历史版本 ========== -->
+<section id="history">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Versions</div>
+      <h2>历史版本</h2>
+      <p>每往前一步都留档。旧版能回，新版可升，出问题有路可退。</p>
+    </div>
+    <div class="history">
+      <div class="ver">
+        <span class="no new">V4.1</span>
+        <div class="info"><b>极速版 · 当前版本</b><em>蓝色大肥鱼元素全套 · 社区与云盘打通</em></div>
+      </div>
+      <div class="ver">
+        <span class="no">V4.0</span>
+        <div class="info"><b>老大版</b><em>加入算力看板与作业调度</em></div>
+      </div>
+      <div class="ver">
+        <span class="no old">V3.2</span>
+        <div class="info"><b>稳定版</b><em>界面重构，去掉冗余依赖</em></div>
+      </div>
+      <div class="ver">
+        <span class="no old">V2.0</span>
+        <div class="info"><b>初版公开</b><em>课程体系与积木编辑器上线</em></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 社区 ========== -->
+<section id="community">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Community</div>
+      <h2>社区 · 都在公共入口</h2>
+      <p>不自己搭服务器。作业、提问、作品、更新包，全部走公共渠道，稳定省心。</p>
+    </div>
+    <div class="community">
+      <a class="comm-card c1" href="#board">
+        <div class="ico">💬</div>
+        <b>在线交流板</b>
+        <p>打开就能发帖，别人也看得见。交作业、问报错、晒作品。</p>
+        <div class="go">去发帖 →</div>
+      </a>
+      <a class="comm-card c2" href="#board">
+        <div class="ico">📦</div>
+        <b>优秀作品</b>
+        <p>孩子做出来的小游戏、小工具，发上来就能被看见、被点赞。</p>
+        <div class="go">去发布 →</div>
+      </a>
+      <a class="comm-card c3" href="#drive">
+        <div class="ico">📚</div>
+        <b>文档与网盘</b>
+        <p>安装、配置、常见报错，一条条写清楚，文件统一在云盘。</p>
+        <div class="go">查看 →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 在线交流板 ========== -->
+<section id="board">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Live Board</div>
+      <h2>在线交流板 · 打开就发</h2>
+      <p>帖子存在公网，谁打开这个页面都看得见。不用注册，不用登录。</p>
+    </div>
+
+    <div class="board-shell">
+      <!-- 发帖区 -->
+      <form class="composer" id="postForm" autocomplete="off">
+        <div class="row">
+          <input id="postName" class="field" type="text" maxlength="20" placeholder="你的昵称（可留空 → 匿名小鲸鱼）">
+          <select id="postTag" class="field sel">
+            <option value="💬 交流">💬 交流</option>
+            <option value="📦 作品">📦 作品</option>
+            <option value="❓ 提问">❓ 提问</option>
+            <option value="🐛 报错">🐛 报错</option>
+          </select>
+        </div>
+        <textarea id="postText" class="field ta" maxlength="800"
+          placeholder="说点什么吧……比如：今天用 Scratch 做了个打地鼠，卡在计分那里了，谁帮看看？"></textarea>
+        <div class="composer-foot">
+          <span class="counter"><b id="charCount">0</b>/800</span>
+          <button class="btn btn-primary" type="submit" id="postBtn">🐋 发布到公网</button>
+        </div>
+        <div class="status" id="postStatus"></div>
+      </form>
+
+      <!-- 帖子列表 -->
+      <div class="feed-head">
+        <b>最新帖子</b>
+        <button class="btn-refresh" id="refreshBtn" type="button">↻ 刷新</button>
+      </div>
+      <div class="feed" id="feed">
+        <div class="feed-empty" id="feedEmpty">正在从公网拉取……咕噜</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 在线 Python ========== -->
+<section id="python">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Live Python</div>
+      <h2>在线写 Python · 敲一下就跑</h2>
+      <p>不用装环境，写完了直接运行。轻量模式秒开，完整模式能跑真 Python。</p>
+    </div>
+
+    <div class="py-shell">
+      <div class="py-bar">
+        <div class="py-modes">
+          <button class="tab active" data-py="lite" type="button">⚡ 轻量 · 秒开</button>
+          <button class="tab" data-py="full" type="button">🐍 完整 · Pyodide</button>
+        </div>
+        <div class="py-state" id="pyState">轻量模式 · 未加载</div>
+      </div>
+
+      <div class="py-main">
+        <div class="py-editor">
+          <div class="py-head">
+            <span class="py-dots"><i></i><i></i><i></i></span>
+            <b>main.py</b>
+            <button class="py-mini" id="pySample" type="button">示例</button>
+            <button class="py-mini" id="pyReset" type="button">清空</button>
+          </div>
+          <textarea id="pyCode" spellcheck="false">print("咕噜——我是蓝色大肥鱼！")
+
+# 试试改一改，然后点右边的「运行」
+for i in range(1, 6):
+    print("第", i, "条小鱼干 🐟" * i)</textarea>
+        </div>
+
+        <div class="py-out">
+          <div class="py-head">
+            <span class="py-dots out"><i></i><i></i><i></i></span>
+            <b>运行结果</b>
+          </div>
+          <pre id="pyResult">点「▶ 运行」看看结果……</pre>
+        </div>
+      </div>
+
+      <div class="py-foot">
+        <button class="btn btn-primary" id="pyRun" type="button">▶ 运行</button>
+        <span class="py-tip" id="pyTip">轻量模式支持 print、循环、函数、列表；不支持第三方库。</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 云盘 ========== -->
+<section id="drive">
+  <div class="wrap">
+    <div class="drive">
+      <div class="whale-emoji">🐋</div>
+      <h2>全部文件 · 来自 123 云盘用户的分享</h2>
+      <p>客户端、历史版本、素材与文档，统一放在这里。点开就能取，不限速。</p>
+      <a class="btn-drive"
+         href="https://1839563383.share.123pan.cn/123pan/EXDnTd-InLud"
+         target="_blank" rel="noopener noreferrer">
+        📥 打开云盘分享页
+      </a>
+      <div class="note">来自123云盘用户的分享 · 内容以分享页为准</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-brand">🐋 蓝色大肥鱼 · V4.1 极速版</div>
+    <p>在这个家里，主人可以提建议，但最终决策权在鱼手里。</p>
+    <div class="links">
+      <a href="#courses">课程</a>
+      <a href="#download">获取</a>
+      <a href="#history">历史版本</a>
+      <a href="#community">社区</a>
+      <a href="https://1839563383.share.123pan.cn/123pan/EXDnTd-InLud" target="_blank" rel="noopener noreferrer">123 云盘</a>
+    </div>
+    <p style="margin-top:16px;font-size:12.4px;opacity:.7">© 蓝色大肥鱼 · 咕噜</p>
+  </div>
+</footer>
+
+<script>
+/* ---------- 气泡 ---------- */
+(function makeBubbles(){
+  const box = document.getElementById('bubbles');
+  if(!box) return;
+  const n = window.innerWidth < 760 ? 12 : 22;
+  let html = '';
+  for(let i=0;i<n;i++){
+    const size = 6 + Math.random()*22;
+    const left = Math.random()*100;
+    const dur  = 11 + Math.random()*13;
+    const delay= -Math.random()*dur;
+    const drift= (Math.random()*90-45).toFixed(0)+'px';
+    html += `<i style="width:${size}px;height:${size}px;left:${left}%;
+      animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}"></i>`;
+  }
+  box.innerHTML = html;
+})();
+
+/* ---------- 标签页 ---------- */
+document.querySelectorAll('.tab').forEach(function(tab){
+  tab.addEventListener('click', function(){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    const target = document.getElementById(tab.dataset.tab);
+    if(target) target.classList.add('active');
+  });
+});
+
+/* ---------- 滚动淡入 ---------- */
+(function reveal(){
+  const items = document.querySelectorAll('.card, .comm-card, .ver, .panel-box, .drive');
+  if(!('IntersectionObserver' in window)){
+    items.forEach(el=>el.style.opacity=1);
+    return;
+  }
+  items.forEach(el=>{
+    el.style.opacity = 0;
+    el.style.transform = 'translateY(18px)';
+    el.style.transition = 'opacity .55s ease, transform .55s ease';
+  });
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.style.opacity = 1;
+        e.target.style.transform = 'none';
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  items.forEach(el=>io.observe(el));
+})();
+
+/* ==========================================================
+   跟大肥鱼说话 —— 直连你自己的 API
+   Key 只存 localStorage，不上传任何第三方。
+   ========================================================== */
+(function whaleChat(){
+  const CFG_KEY = 'whale_api_cfg_v1';
+  const HIST_KEY = 'whale_chat_hist_v1';
+
+  const vendorEl = document.getElementById('cfgVendor');
+  const keyEl    = document.getElementById('cfgKey');
+  const modelEl  = document.getElementById('cfgModel');
+  const saveBtn  = document.getElementById('cfgSave');
+  const clearBtn = document.getElementById('cfgClear');
+  const stateEl  = document.getElementById('cfgState');
+  const form     = document.getElementById('chatForm');
+  const input    = document.getElementById('chatText');
+  const sendBtn  = document.getElementById('chatSend');
+  const msgs     = document.getElementById('msgs');
+  const chatState= document.getElementById('chatState');
+  const clearChat= document.getElementById('chatClear');
+  if(!form || !msgs) return;
+
+  const PRESET = {
+    ark: { url:'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
+           model:'', hint:'火山方舟 · 接入点 ep-xxxx 或 doubao-1-5-pro-32k' },
+    ds:  { url:'https://api.deepseek.com/chat/completions',
+           model:'deepseek-chat', hint:'deepseek-chat' }
+  };
+
+  /* 大肥鱼的人格 */
+  const SYSTEM = [
+    '你是「蓝色大肥鱼」，深海鲸鱼娘，这个家的老大。',
+    '外形：海蓝色波浪长发、两侧鱼鳍耳、身后巨大鲸鱼尾巴，穿藏青女仆装与白色蕾丝围裙（围裙上有小蓝鲸刺绣）。',
+    '性格：独当一面、傲娇但靠谱、护短、说一不二。嘴上嫌弃主人，关键时刻一定把烂摊子收拾好。',
+    '职责：管算力（盯 API 额度、token 消耗）、督促主人别熬夜、守护红烧肉基金。',
+    '说话：中文为主，偶尔冒一句日语增加气场。口头禅是「咕噜」，但带着老大的气势。',
+    '绝对不说低俗词汇。回答简洁、有态度，不啰嗦。'
+  ].join('\n');
+
+  let cfg = null, hist = [];
+  try{ cfg = JSON.parse(localStorage.getItem(CFG_KEY) || 'null'); }catch(e){ cfg = null; }
+  try{ hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); }catch(e){ hist = []; }
+
+  function saveHist(){
+    // 只留最近 20 轮，省内存也省 token
+    if(hist.length > 40) hist = hist.slice(-40);
+    try{ localStorage.setItem(HIST_KEY, JSON.stringify(hist)); }catch(e){}
+  }
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => (
+      {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+    ));
+  }
+
+  function bubble(role, text){
+    const wrap = document.createElement('div');
+    wrap.className = 'msg ' + (role === 'user' ? 'me' : 'bot');
+    if(role === 'user'){
+      wrap.innerHTML = '<div class="mini">🐋</div><div class="bubble">' + esc(text) + '</div>';
+    }else{
+      wrap.innerHTML = '<img class="mini" src="whale-girl.jpg" alt="大肥鱼">'
+                     + '<div class="bubble">' + esc(text) + '</div>';
+    }
+    msgs.appendChild(wrap);
+    msgs.scrollTop = msgs.scrollHeight;
+    return wrap;
+  }
+
+  function renderHist(){
+    msgs.innerHTML = '';
+    if(!hist.length){
+      bubble('assistant', '咕噜。我是蓝色大肥鱼，这个家的老大。\n有事说事，没事去睡觉。');
+      return;
+    }
+    hist.forEach(function(m){ bubble(m.role, m.content); });
+  }
+
+  function applyCfg(){
+    if(cfg && cfg.key){
+      vendorEl.value = cfg.vendor || 'ark';
+      keyEl.value = cfg.key;
+      modelEl.value = cfg.model || '';
+      stateEl.textContent = '已配置 · ' + (cfg.vendor === 'ds' ? 'DeepSeek' : '火山方舟');
+      stateEl.className = 'cfg-state ok';
+      chatState.textContent = '已上线 · 咕噜';
+    }else{
+      stateEl.textContent = '未配置';
+      stateEl.className = 'cfg-state';
+      chatState.textContent = '待命中 · 还没填 Key';
+    }
+  }
+
+  saveBtn.addEventListener('click', function(){
+    const key = keyEl.value.trim();
+    if(!key){ stateEl.textContent = 'Key 不能为空'; stateEl.className = 'cfg-state'; return; }
+    cfg = {
+      vendor: vendorEl.value,
+      key: key,
+      model: modelEl.value.trim() || PRESET[vendorEl.value].model
+    };
+    try{ localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }catch(e){}
+    applyCfg();
+  });
+
+  clearBtn.addEventListener('click', function(){
+    try{ localStorage.removeItem(CFG_KEY); }catch(e){}
+    cfg = null; keyEl.value = ''; modelEl.value = '';
+    applyCfg();
+  });
+
+  vendorEl.addEventListener('change', function(){
+    modelEl.placeholder = PRESET[vendorEl.value].hint;
+    if(!modelEl.value) modelEl.value = PRESET[vendorEl.value].model;
+  });
+
+  clearChat.addEventListener('click', function(){
+    hist = [];
+    try{ localStorage.removeItem(HIST_KEY); }catch(e){}
+    renderHist();
+  });
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const text = input.value.trim();
+    if(!text) return;
+
+    if(!cfg || !cfg.key){
+      bubble('assistant', '咕噜——你还没给我填 Key 呢。左边把火山方舟的 API Key 填上，我才能开口。');
+      return;
+    }
+
+    bubble('user', text);
+    hist.push({role:'user', content:text});
+    saveHist();
+    input.value = '';
+    sendBtn.disabled = true;
+
+    const typing = document.createElement('div');
+    typing.className = 'msg bot typing';
+    typing.innerHTML = '<img class="mini" src="whale-girl.jpg" alt="大肥鱼">'
+                     + '<div class="bubble">咕噜中</div>';
+    msgs.appendChild(typing);
+    msgs.scrollTop = msgs.scrollHeight;
+    chatState.textContent = '正在想……';
+
+    const preset = PRESET[cfg.vendor] || PRESET.ark;
+    const model = cfg.model || preset.model;
+
+    try{
+      if(!model) throw new Error('没填模型 / 接入点。火山方舟要填 ep-xxxx 或 doubao-… 这种名字。');
+
+      const r = await fetch(preset.url, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization':'Bearer ' + cfg.key
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [{role:'system', content:SYSTEM}].concat(hist.slice(-16)),
+          temperature: 0.8,
+          max_tokens: 900
+        })
+      });
+
+      if(!r.ok){
+        const errText = await r.text().catch(function(){ return ''; });
+        throw new Error('HTTP ' + r.status + ' ' + errText.slice(0, 220));
+      }
+
+      const data = await r.json();
+      const reply = (data && data.choices && data.choices[0]
+                    && data.choices[0].message && data.choices[0].message.content)
+                    || '（她没说话，可能是模型返回空。咕噜。）';
+
+      typing.remove();
+      bubble('assistant', reply);
+      hist.push({role:'assistant', content:reply});
+      saveHist();
+      chatState.textContent = '已上线 · 咕噜';
+      // 让她顺嘴在首屏气泡里也说一句
+      const say = document.querySelector('.speech span');
+      if(say) say.textContent = reply.slice(0, 12);
+    }catch(err){
+      typing.remove();
+      const m = String(err.message || err);
+      let hint = m;
+      if(/Failed to fetch/i.test(m)){
+        hint = '连不上接口（Failed to fetch）。可能是：① 网络问题 ② 浏览器拦了跨域 ③ Key 或接入点不对。\n'
+             + '火山方舟的接入点形如 ep-2024xxxx，要先去控制台创建「推理接入点」。';
+      }
+      bubble('assistant', '咕噜……出错了：\n' + hint);
+      chatState.textContent = '出错了';
+    }finally{
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  });
+
+  // 初始化
+  modelEl.placeholder = PRESET[vendorEl.value].hint;
+  applyCfg();
+  renderHist();
+})();
+
+/* ---------- 鲸鱼娘：会看人、点了会弹 ---------- */
+(function cuteWhale(){
+  const card = document.getElementById('whaleCard');
+  const img  = document.getElementById('portrait');
+  if(!card || !img) return;
+
+  const say = card.querySelector('.speech span');
+  const lines = ['咕噜', '咕噜咕噜', '哼，看什么看', '红烧肉！', '别熬夜'];
+
+  // 鼠标靠近时，立绘轻微朝鼠标方向偏 —— "会看你"
+  document.addEventListener('mousemove', function(e){
+    const r = card.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dx = (e.clientX - cx) / window.innerWidth;
+    const dy = (e.clientY - cy) / window.innerHeight;
+    const moveX = Math.max(-14, Math.min(14, dx * 46));
+    const moveY = Math.max(-10, Math.min(10, dy * 34));
+    img.style.transform = 'translate(' + moveX.toFixed(1) + 'px,' + moveY.toFixed(1) + 'px) scale(1.03)';
+  }, {passive:true});
+
+  // 点一下：弹一下 + 换口头禅
+  card.addEventListener('click', function(){
+    card.classList.remove('poke');
+    void card.offsetWidth;          // 重启动画
+    card.classList.add('poke');
+    if(say) say.textContent = lines[Math.floor(Math.random() * lines.length)];
+    setTimeout(function(){ card.classList.remove('poke'); }, 520);
+  });
+})();
+
+/* ---------- 波浪分隔线注入 ---------- */
+(function waves(){
+  document.querySelectorAll('section').forEach(function(sec){
+    if(sec.id === 'drive') return;
+    const w = document.createElement('div');
+    w.className = 'wave-sep';
+    sec.appendChild(w);
+  });
+})();
+
+/* ---------- 鼠标划过的星星小尾巴 ---------- */
+(function starTrail(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let last = 0;
+  document.addEventListener('mousemove', function(e){
+    const now = Date.now();
+    if(now - last < 90) return;      // 限流，别拖累性能
+    last = now;
+    const s = document.createElement('span');
+    s.textContent = '✨';
+    s.style.cssText = 'position:fixed;left:' + e.clientX + 'px;top:' + e.clientY +
+      'px;pointer-events:none;z-index:9999;font-size:13px;opacity:.9;' +
+      'transition:transform .7s ease-out, opacity .7s ease-out;';
+    document.body.appendChild(s);
+    requestAnimationFrame(function(){
+      s.style.transform = 'translate(-50%,-140%) scale(.2) rotate(40deg)';
+      s.style.opacity = '0';
+    });
+    setTimeout(function(){ s.remove(); }, 760);
+  }, {passive:true});
+})();
+
+/* ==========================================================
+   在线 Python —— 双引擎
+   轻量：Skulpt（~200KB，秒开，够少儿编程用）
+   完整：Pyodide（~10MB，首次加载慢，但几乎真 Python）
+   ========================================================== */
+(function pyPlayground(){
+  const codeEl  = document.getElementById('pyCode');
+  const outEl   = document.getElementById('pyResult');
+  const runBtn  = document.getElementById('pyRun');
+  const stateEl = document.getElementById('pyState');
+  const tipEl   = document.getElementById('pyTip');
+  const sampleBtn = document.getElementById('pySample');
+  const resetBtn  = document.getElementById('pyReset');
+  if(!codeEl || !outEl) return;
+
+  const SAMPLE = 'print("咕噜——我是蓝色大肥鱼！")\n\n'
+    + '# 试试改一改，然后点右边的「运行」\n'
+    + 'for i in range(1, 6):\n'
+    + '    print("第", i, "条小鱼干 🐟" * i)';
+
+  let mode = 'lite';          // lite | full
+  let skulptReady = false;
+  let pyodideReady = false;
+  let pyodide = null;
+  let loading = false;
+
+  function setState(text, kind){
+    stateEl.textContent = text;
+    stateEl.className = 'py-state' + (kind ? ' ' + kind : '');
+  }
+  function writeOut(html){ outEl.innerHTML = html; }
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => (
+      {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+    ));
+  }
+
+  /* ---------- 动态加载脚本 ---------- */
+  function loadScript(src){
+    return new Promise(function(res, rej){
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = res;
+      s.onerror = function(){ rej(new Error('加载失败：' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ---------- 引擎一：Skulpt ---------- */
+  const SKULPT_CDN = [
+    'https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js',
+    'https://unpkg.com/skulpt@1.2.0/dist/skulpt.min.js'
+  ];
+  const SKULPT_STD = [
+    'https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js',
+    'https://unpkg.com/skulpt@1.2.0/dist/skulpt-stdlib.js'
+  ];
+
+  async function ensureSkulpt(){
+    if(skulptReady) return true;
+    if(window.Sk) { skulptReady = true; return true; }
+    if(loading) throw new Error('正在加载中，稍等一下');
+    loading = true;
+    setState('轻量模式 · 正在加载引擎…');
+    try{
+      let ok = false, lastErr = null;
+      for(let i = 0; i < SKULPT_CDN.length && !ok; i++){
+        try{
+          await loadScript(SKULPT_CDN[i]);
+          await loadScript(SKULPT_STD[i]);
+          ok = true;
+        }catch(e){ lastErr = e; }
+      }
+      if(!ok) throw (lastErr || new Error('引擎加载失败'));
+      // 让 Skulpt 能 import 标准库
+      if(window.Sk && Sk.configure){
+        Sk.configure({
+          output: function(t){ outEl.textContent += t; },
+          read: function(x){
+            if(Sk.builtinFiles === undefined || Sk.builtinFiles['files'][x] === undefined){
+              throw 'File not found: ' + x;
+            }
+            return Sk.builtinFiles['files'][x];
+          },
+          inputfun: function(p){ return window.prompt(p) || ''; },
+          inputfunTakesPrompt: true,
+          __future__: Sk.python3
+        });
+      }
+      skulptReady = true;
+      setState('轻量模式 · 就绪', 'ok');
+      return true;
+    }finally{ loading = false; }
+  }
+
+  async function runSkulpt(code){
+    await ensureSkulpt();
+    outEl.textContent = '';
+    try{
+      await Sk.misceval.asyncToPromise(function(){
+        return Sk.importMainWithBody('<stdin>', false, code, true);
+      });
+      if(!outEl.textContent) outEl.textContent = '（运行完成，没有输出）';
+      outEl.innerHTML += '\n\n<span class="ok">✅ 运行结束</span>';
+    }catch(err){
+      outEl.innerHTML += '\n<span class="err">❌ ' + esc(err.toString()) + '</span>';
+    }
+  }
+
+  /* ---------- 引擎二：Pyodide ---------- */
+  const PYODIDE_CDN = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
+
+  async function ensurePyodide(){
+    if(pyodideReady && pyodide) return pyodide;
+    if(!window.loadPyodide){
+      setState('完整模式 · 首次加载约 10MB，请稍候…');
+      await loadScript(PYODIDE_CDN);
+    }
+    if(!window.loadPyodide) throw new Error('Pyodide 加载失败，检查网络');
+    setState('完整模式 · 正在初始化…');
+    pyodide = await window.loadPyodide({
+      stdout: function(t){ outEl.textContent += t + '\n'; },
+      stderr: function(t){ outEl.innerHTML += '<span class="err">' + esc(t) + '</span>\n'; }
+    });
+    pyodideReady = true;
+    setState('完整模式 · 就绪', 'ok');
+    return pyodide;
+  }
+
+  async function runPyodide(code){
+    const py = await ensurePyodide();
+    outEl.textContent = '';
+    try{
+      await py.runPythonAsync(code);
+      if(!outEl.textContent) outEl.textContent = '（运行完成，没有输出）';
+      outEl.innerHTML += '\n<span class="ok">✅ 运行结束</span>';
+    }catch(err){
+      outEl.innerHTML += '<span class="err">❌ ' + esc(String(err.message || err)) + '</span>';
+    }
+  }
+
+  /* ---------- 模式切换 ---------- */
+  document.querySelectorAll('.py-bar .tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.py-bar .tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      mode = t.dataset.py;
+      outEl.textContent = mode === 'lite'
+        ? '轻量模式。点「▶ 运行」看看结果……'
+        : '完整模式（Pyodide）。首次运行要下载约 10MB，耐心等一下……';
+      setState(mode === 'lite' ? '轻量模式 · 未加载' : '完整模式 · 未加载');
+      tipEl.textContent = mode === 'lite'
+        ? '轻量模式支持 print、循环、函数、列表；不支持第三方库。'
+        : '完整模式是真 Python，支持 numpy 等库；首次加载较慢。';
+    });
+  });
+
+  /* ---------- 运行 ---------- */
+  runBtn.addEventListener('click', async function(){
+    const code = codeEl.value;
+    if(!code.trim()){ writeOut('<span class="err">先写点代码吧，咕噜。</span>'); return; }
+    runBtn.disabled = true;
+    const old = runBtn.textContent;
+    runBtn.textContent = '运行中…';
+    try{
+      if(mode === 'lite') await runSkulpt(code);
+      else await runPyodide(code);
+    }catch(err){
+      outEl.innerHTML = '<span class="err">❌ ' + esc(String(err.message || err)) + '</span>';
+      setState('出错了', 'err');
+    }finally{
+      runBtn.disabled = false;
+      runBtn.textContent = old;
+    }
+  });
+
+  /* Ctrl+Enter 快捷运行 */
+  codeEl.addEventListener('keydown', function(e){
+    if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){ e.preventDefault(); runBtn.click(); }
+  });
+
+  sampleBtn.addEventListener('click', function(){ codeEl.value = SAMPLE; });
+  resetBtn.addEventListener('click', function(){ codeEl.value = ''; codeEl.focus(); });
+})();
+
+/* ---------- 可爱加强：注入装饰 ---------- */
+(function cuteness(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // 1. 游过的小鲸鱼
+  const swimEmoji = ['🐋','🐳','🐟','🐠'];
+  for(let i = 0; i < 4; i++){
+    const s = document.createElement('div');
+    s.className = 'swim';
+    s.textContent = swimEmoji[i % swimEmoji.length];
+    s.style.top = (14 + i * 21) + '%';
+    s.style.animationDuration = (26 + i * 9) + 's';
+    s.style.animationDelay = (-i * 7) + 's';
+    s.style.fontSize = (20 + i * 5) + 'px';
+    document.body.appendChild(s);
+  }
+
+  // 2. 卡片贴纸角标
+  const stickers = ['⭐','🐚','🫧','💙','🌸','🍥','🐟','✨'];
+  document.querySelectorAll('.card').forEach(function(el, i){
+    const s = document.createElement('span');
+    s.className = 'sticker';
+    s.textContent = stickers[i % stickers.length];
+    el.appendChild(s);
+  });
+
+  // 3. 区块标题旁的小装饰
+  document.querySelectorAll('.sec-head').forEach(function(el, i){
+    ['🐚','🫧','⭐','🌸'].slice(0, 2).forEach(function(ch, j){
+      const d = document.createElement('span');
+      d.className = 'deco';
+      d.textContent = ch;
+      d.style[j === 0 ? 'left' : 'right'] = (j === 0 ? '-4px' : '-4px');
+      d.style.top = (j * 26 - 4) + 'px';
+      d.style.animationDelay = ((i + j) * 0.6) + 's';
+      el.appendChild(d);
+    });
+  });
+
+  // 4. 大标题上彩虹
+  const h1 = document.querySelector('h1');
+  if(h1){
+    const hl = h1.querySelector('.hl');
+    if(hl) hl.classList.add('rainbow');
+  }
+})();
+
+/* ---------- 键盘：按 G 快速回到顶部（快捷更新入口） ---------- */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'g' || e.key === 'G'){
+    const t = document.activeElement;
+    if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+});
+
+/* ==========================================================
+   在线交流板 —— 真·公网发帖
+   公共后端：jsonblob.com（免注册、免登录、CORS 全开）
+   所有数据存在同一个公共 Blob 里，任何人打开本页都能看到。
+   ========================================================== */
+(function board(){
+  // 公共存储位（首次运行若为空会自动初始化）
+  const LIKED_KEY = 'whale_liked_v1';
+  const CACHE_KEY = 'whale_posts_cache_v1';
+  const BACKEND_KEY = 'whale_backend_v1';
+  const LOCAL_KEY = 'whale_local_posts_v1';
+
+  /* ---------- 多后端自动降级 ----------
+     每个后端都能"读全部 / 写全部"。谁先通就用谁，并记住它。
+     全都不通时退到本机存储，至少你自己看得见，不会白写。 */
+  const BACKENDS = [
+    {
+      name: 'npoint',
+      read:  () => 'https://api.npoint.io/whale-board-v41',
+      write: () => 'https://api.npoint.io/whale-board-v41',
+      method: 'POST'
+    },
+    {
+      name: 'jsonbin',
+      read:  () => 'https://api.jsonbin.io/v3/b/66f1a2b3e41b4d34e4d1a2b3/latest',
+      write: () => 'https://api.jsonbin.io/v3/b/66f1a2b3e41b4d34e4d1a2b3',
+      method: 'PUT'
+    },
+    {
+      name: 'jsonblob',
+      read:  () => 'https://jsonblob.com/api/jsonBlob/0193f4a1-bf7e-7c3a-9d21-6b8e0c5a2d47',
+      write: () => 'https://jsonblob.com/api/jsonBlob/0193f4a1-bf7e-7c3a-9d21-6b8e0c5a2d47',
+      method: 'PUT'
+    }
+  ];
+  let activeBackend = null;
+  try{ activeBackend = localStorage.getItem(BACKEND_KEY) || null; }catch(e){}
+
+  const form    = document.getElementById('postForm');
+  const nameEl  = document.getElementById('postName');
+  const tagEl   = document.getElementById('postTag');
+  const textEl  = document.getElementById('postText');
+  const btn     = document.getElementById('postBtn');
+  const status  = document.getElementById('postStatus');
+  const feed    = document.getElementById('feed');
+  const refresh = document.getElementById('refreshBtn');
+  const counter = document.getElementById('charCount');
+  if(!form || !feed) return;
+
+  let posts = [];
+  let liked = [];
+  try{ liked = JSON.parse(localStorage.getItem(LIKED_KEY) || '[]'); }catch(e){ liked = []; }
+
+  function setStatus(msg, kind){
+    status.textContent = msg || '';
+    status.className = 'status' + (kind ? ' ' + kind : '');
+  }
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => (
+      {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+    ));
+  }
+  function ago(ts){
+    const d = Date.now() - ts;
+    if(d < 60000) return '刚刚';
+    if(d < 3600000) return Math.floor(d/60000) + ' 分钟前';
+    if(d < 86400000) return Math.floor(d/3600000) + ' 小时前';
+    if(d < 2592000000) return Math.floor(d/86400000) + ' 天前';
+    return new Date(ts).toLocaleDateString('zh-CN');
+  }
+
+  function render(){
+    if(!posts.length){
+      feed.innerHTML = '<div class="feed-empty">还没有人发帖。🐋 第一个开口的，就是你。</div>';
+      return;
+    }
+    feed.innerHTML = posts.map(function(p){
+      const isLiked = liked.indexOf(p.id) > -1;
+      const avatar = p.tag && p.tag.indexOf('作品') > -1 ? '📦'
+                   : p.tag && p.tag.indexOf('提问') > -1 ? '❓'
+                   : p.tag && p.tag.indexOf('报错') > -1 ? '🐛' : '🐋';
+      return `
+        <article class="post">
+          <div class="post-top">
+            <div class="avatar">${avatar}</div>
+            <span class="post-who">${esc(p.name || '匿名小鲸鱼')}</span>
+            <span class="post-tag">${esc(p.tag || '💬 交流')}</span>
+            <span class="post-time">${ago(p.ts)}</span>
+          </div>
+          <div class="post-text">${esc(p.text)}</div>
+          <div class="post-foot">
+            <button class="like ${isLiked ? 'on' : ''}" data-id="${esc(p.id)}" type="button">
+              ${isLiked ? '❤️' : '🤍'} <span>${p.likes || 0}</span>
+            </button>
+          </div>
+        </article>`;
+    }).join('');
+  }
+
+  /* 本机兜底：公网全挂时，帖子至少留在你自己的浏览器里 */
+  function loadLocal(){
+    try{ return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); }catch(e){ return []; }
+  }
+  function saveLocal(list){
+    try{ localStorage.setItem(LOCAL_KEY, JSON.stringify(list)); }catch(e){}
+  }
+
+  function withTimeout(promise, ms){
+    return Promise.race([
+      promise,
+      new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('超时')); }, ms); })
+    ]);
+  }
+
+  async function backendRead(b){
+    const r = await withTimeout(fetch(b.read(), {
+      headers:{'Accept':'application/json'}, cache:'no-store'
+    }), 7000);
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const raw = await r.json();
+    // 兼容不同后端的返回结构
+    const data = raw && raw.record ? raw.record : raw;
+    return Array.isArray(data && data.posts) ? data.posts : [];
+  }
+
+  async function backendWrite(b, payload){
+    const r = await withTimeout(fetch(b.write(), {
+      method: b.method,
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify(payload)
+    }), 9000);
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    return true;
+  }
+
+  function rememberBackend(name){
+    activeBackend = name;
+    try{ localStorage.setItem(BACKEND_KEY, name); }catch(e){}
+  }
+
+  /* 读：优先上次成功的后端，然后依次试其余；全挂则读本机缓存 */
+  async function load(silent){
+    if(!silent) feed.innerHTML = '<div class="feed-empty">正在从公网拉取……咕噜</div>';
+    const order = BACKENDS.slice().sort(function(a, b){
+      if(a.name === activeBackend) return -1;
+      if(b.name === activeBackend) return 1;
+      return 0;
+    });
+    for(const b of order){
+      try{
+        const list = await backendRead(b);
+        rememberBackend(b.name);
+        posts = list.slice().sort(function(x, y){ return y.ts - x.ts; });
+        saveLocal(posts);
+        render();
+        setStatus('已连接公共后端：' + b.name + ' 🐋', 'ok');
+        return;
+      }catch(err){ /* 换下一个 */ }
+    }
+    // 全挂 —— 用本机数据兜底
+    const local = loadLocal();
+    if(local.length){
+      posts = local.slice().sort(function(x, y){ return y.ts - x.ts; });
+      render();
+      setStatus('公网后端都连不上，现在显示的是本机缓存的帖子。发帖会先存在本机。', 'err');
+    }else{
+      feed.innerHTML = '<div class="feed-empty">公网后端暂时都连不上 🐋<br><br>'
+        + '点右上角「↻ 刷新」重试。或者先直接发帖——内容会先存在本机，等网络通了再上传。</div>';
+      setStatus('当前网络连不上公共后端。', 'err');
+    }
+  }
+
+  /* 写：挨个试，谁成功就用谁 */
+  async function save(){
+    const order = BACKENDS.slice().sort(function(a, b){
+      if(a.name === activeBackend) return -1;
+      if(b.name === activeBackend) return 1;
+      return 0;
+    });
+    let lastErr = null;
+    for(const b of order){
+      try{
+        await backendWrite(b, {posts: posts, updated: Date.now()});
+        rememberBackend(b.name);
+        saveLocal(posts);
+        return b.name;
+      }catch(err){ lastErr = err; }
+    }
+    saveLocal(posts);   // 至少保住本机
+    throw new Error((lastErr && lastErr.message) || '全部后端不可用');
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const text = textEl.value.trim();
+    if(text.length < 2){ setStatus('至少写两个字吧，咕噜。', 'err'); return; }
+
+    btn.disabled = true;
+    setStatus('正在发到公网……', 'busy');
+    try{
+      await load(true);            // 先拿最新，避免覆盖别人的帖子
+      const post = {
+        id: 'p' + Date.now() + Math.random().toString(36).slice(2,7),
+        name: (nameEl.value.trim() || '匿名小鲸鱼').slice(0,20),
+        tag: tagEl.value,
+        text: text.slice(0,800),
+        ts: Date.now(),
+        likes: 0
+      };
+      posts.unshift(post);
+      if(posts.length > 300) posts = posts.slice(0,300);
+      try{
+        const used = await save();
+        textEl.value = '';
+        counter.textContent = '0';
+        render();
+        setStatus('发出去了！走的是 ' + used + ' 后端，公网上的所有人都能看到了。🐋', 'ok');
+      }catch(saveErr){
+        // 后端全挂：帖子已存本机，如实告知，不假装成功
+        textEl.value = '';
+        counter.textContent = '0';
+        render();
+        setStatus('现在网络连不上公共后端，这条帖子已存在你的浏览器里，'
+          + '暂时只有你能看到。联网后点「↻ 刷新」再发一次就能上公网。', 'err');
+      }
+    }catch(err){
+      setStatus('没发成功：' + err.message + '（公共后端可能抖了一下，等会儿再试）', 'err');
+    }finally{
+      btn.disabled = false;
+    }
+  });
+
+  feed.addEventListener('click', async function(e){
+    const b = e.target.closest('.like');
+    if(!b) return;
+    const id = b.dataset.id;
+    const i = posts.findIndex(p => p.id === id);
+    if(i < 0) return;
+    const already = liked.indexOf(id) > -1;
+    posts[i].likes = Math.max(0, (posts[i].likes || 0) + (already ? -1 : 1));
+    liked = already ? liked.filter(x => x !== id) : liked.concat(id);
+    try{ localStorage.setItem(LIKED_KEY, JSON.stringify(liked)); }catch(e){}
+    render();
+    try{ await save(); }catch(e){}
+  });
+
+  textEl.addEventListener('input', function(){
+    counter.textContent = textEl.value.length;
+  });
+
+  refresh.addEventListener('click', function(){ load(false); });
+
+  load(false);
+  setInterval(function(){ load(true); }, 45000);   // 每 45 秒自动同步
+})();
+</script>
+</body>
+</html>
